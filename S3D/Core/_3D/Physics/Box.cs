@@ -109,6 +109,10 @@ namespace S3D.Core._3D.Physics
                 this.forwardVector = value;
             }
         }
+
+        public Vector3[] GetCorners() {
+            return null;
+        }
      
     }
 }
