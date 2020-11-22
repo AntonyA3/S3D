@@ -45,7 +45,9 @@
     <Compile Include="Core\_2D\Physics\Circle.cs" />
     <Compile Include="Core\_2D\Physics\Square.cs" />
     <Compile Include="Core\_2D\Sprite.cs" />
+    <Compile Include="Core\_3D\Humanoid.cs" />
     <Compile Include="Core\_3D\Physics\Box.cs" />
+    <Compile Include="Core\_3D\Physics\Joint.cs" />
     <Compile Include="Core\_3D\Physics\Sphere.cs" />
     <Compile Include="Core\_3D\Sprite3D.cs" />
     <Compile Include="Game1.cs" />
