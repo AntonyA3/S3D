@@ -10,6 +10,11 @@ namespace S3D.Core._3D
 {
     class Sprite3D
     {
+        public static Func<Vector3, Vector2> IsometicProjection = 
+            new Func<Vector3, Vector2> (position =>{
+                return new Vector2(position.X + position.Z, 0.5f*(position.X + position.Z) + position.Y);
+            });
+
         private Vector3 position;
         private Vector2 location;
         private Rectangle area;
@@ -19,6 +24,7 @@ namespace S3D.Core._3D
         private SpriteEffects flipped;
 
         private Texture2D texture;
+
         private Func<Vector3, Vector2> projection;
 
         public Sprite3D(Texture2D texture) {
@@ -30,6 +36,7 @@ namespace S3D.Core._3D
             this.color = Color.White;
             this.flipped = SpriteEffects.None;
             this.texture = texture;
+            this.projection = Sprite3D.IsometicProjection;
 
         }
 
@@ -101,7 +108,6 @@ namespace S3D.Core._3D
             }
         }
 
-
         public Texture2D Texture {
             get {
                 return this.texture;
@@ -113,7 +119,7 @@ namespace S3D.Core._3D
       
 
         public void Draw(SpriteBatch spriteBatch) {
-            spriteBatch.Draw(texture, null, area, frame, null, 0, null, color, flipped, 0);
+            spriteBatch.Draw(this.texture, null, area, frame, null, 0, null, color, flipped, 0);
         }
       
     }

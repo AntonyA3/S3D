@@ -43,7 +43,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Core\_2D\Physics\Circle.cs" />
-    <Compile Include="Core\_2D\Physics\Square.cs" />
+    <Compile Include="Core\_2D\Physics\Rect.cs" />
     <Compile Include="Core\_2D\Sprite.cs" />
     <Compile Include="Core\_3D\Humanoid.cs" />
     <Compile Include="Core\_3D\Physics\Box.cs" />
