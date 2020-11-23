@@ -39,7 +39,7 @@ namespace S3D.Core._3D.Physics
             Vector3[] corner = box.GetCorners();
             bool r = false;
 
-            for (int i = 0; i < 6; i++) {
+            for (int i = 0; i < 8; i++) {
                 r = r || this.Contains(corner[i]);
             }
             return r;

@@ -60,19 +60,15 @@ namespace S3D.Core._3D.Physics
         /// Creates a new Box with no orientation
         /// </summary>
         /// <param name="centre">The centre of the box</param>
-        /// <param name="halfWidth">Half of the width of the box</param>
-        /// <param name="halfHeight">Half of the height of the box</param>
-        /// <param name="halfDepth">Half the depth of the box</param>
-        public Box(Vector3 centre, float halfWidth, float halfHeight, float halfDepth) {
+        /// <param name="halfWidth">Half of the width of the box and it's direction</param>
+        /// <param name="halfHeight">Half of the height of the box and its direction</param>
+        /// <param name="halfDepth">Half the depth of the box and it's direction</param>
+        public Box(Vector3 centre, Vector3 rightVector, Vector3 upVector, Vector3 forwardVector) {
             this.centre = centre;
 
-            this.halfWidth = halfWidth;
-            this.halfHeight = halfHeight;
-            this.halfDepth = halfDepth;
-
-            this.rightVector = new Vector3(halfWidth, 0, 0);
-            this.upVector = new Vector3(0, halfHeight, 0);
-            this.forwardVector = new Vector3(0, 0, halfDepth);
+            this.rightVector = rightVector;
+            this.upVector = upVector;
+            this.forwardVector = forwardVector;
 
         }
         public Vector3 Centre {
@@ -110,8 +106,66 @@ namespace S3D.Core._3D.Physics
             }
         }
 
+        public bool Intersects(Sphere sphere) {
+            return sphere.Intersects(this);
+        }
+
+        /// <summary>
+        /// Because the intersection function uses the contains function
+        /// it also presumes that each vector of the box is at 90 degrees of each other
+        /// </summary>
+        /// <param name="box"></param>
+        /// <returns></returns>
+        public bool Intersects(Box box) {
+            bool r = false;
+            Vector3[] corner = box.GetCorners();
+            for (int i = 0; i < 8; i++) {
+                r = r || this.Contains(corner[i]);
+            }
+            return r;
+        }
+        /// <summary>
+        /// The contains function presumes that eah vector in the box is 90 degree.
+        /// </summary>
+        /// <param name="point"></param>
+        /// <returns></returns>
+        public bool Contains(Vector3 point) {
+            bool r = false;
+            Vector3[] corner = this.GetCorners();
+
+            for (int i = 0; i < 8; i++) {
+                //corner to point
+                Vector3 ctp = point - corner[i];
+                //corner to centre;
+                Vector3 ceTp = this.centre - corner[i];
+                r = r ||Vector3.Dot(ctp, ceTp) > 0;
+            }
+            return r;
+            
+        }
+
         public Vector3[] GetCorners() {
-            return null;
+            Vector3[] corner = {
+                this.centre - this.rightVector - this.upVector - this.forwardVector,
+                this.centre - this.rightVector + this.upVector - this.forwardVector,
+                this.centre + this.rightVector + this.upVector - this.forwardVector,
+                this.centre + this.rightVector - this.upVector - this.forwardVector,
+                this.centre - this.rightVector - this.upVector + this.forwardVector,
+                this.centre - this.rightVector + this.upVector + this.forwardVector,
+                this.centre + this.rightVector + this.upVector + this.forwardVector,
+                this.centre + this.rightVector - this.upVector + this.forwardVector
+            };
+            return corner;
+        }
+        /// <summary>
+        /// this returns true if it is a box,
+        /// this returns false if it is a parallelpipe
+        /// </summary>
+        public bool isBox() {
+            return Vector3.Dot(upVector, rightVector) *
+                   Vector3.Dot(rightVector, forwardVector) *
+                   Vector3.Dot(upVector, forwardVector) == 0;
+            
         }
      
     }
