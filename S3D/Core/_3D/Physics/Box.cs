@@ -162,8 +162,8 @@ namespace S3D.Core._3D.Physics
         /// this returns false if it is a parallelpipe
         /// </summary>
         public bool isBox() {
-            return Vector3.Dot(upVector, rightVector) *
-                   Vector3.Dot(rightVector, forwardVector) *
+            return Vector3.Dot(upVector, rightVector) +
+                   Vector3.Dot(rightVector, forwardVector) +
                    Vector3.Dot(upVector, forwardVector) == 0;
             
         }
