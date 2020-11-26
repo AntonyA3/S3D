@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 
 namespace S3D.Core._3D.Physics
 {
-    class Joint
+    public class Joint
     {
         Matrix m;
         Vector3 position;

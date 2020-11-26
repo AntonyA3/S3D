@@ -10,7 +10,7 @@ namespace S3D.Core._3D.Physics
     /// <summary>
     /// Represent a Movable and Rotatable cuboid that is useful for collision detection
     /// </summary>
-    class Box
+    public class Box
     {
         /// <summary>
         /// The centre of the cuboid
@@ -112,33 +112,35 @@ namespace S3D.Core._3D.Physics
 
         /// <summary>
         /// Because the intersection function uses the contains function
-        /// it also presumes that each vector of the box is at 90 degrees of each other
+        /// it should work for parallelpipes 
         /// </summary>
         /// <param name="box"></param>
         /// <returns></returns>
         public bool Intersects(Box box) {
             bool r = false;
             Vector3[] corner = box.GetCorners();
+            Vector3[] corner2 = this.GetCorners();
             for (int i = 0; i < 8; i++) {
                 r = r || this.Contains(corner[i]);
+                r = r || box.Contains(corner2[i]);
             }
             return r;
         }
         /// <summary>
-        /// The contains function presumes that eah vector in the box is 90 degree.
+        /// The contains function that should work for parallelpipes
         /// </summary>
         /// <param name="point"></param>
         /// <returns></returns>
         public bool Contains(Vector3 point) {
             bool r = false;
             Vector3[] corner = this.GetCorners();
+            
 
             for (int i = 0; i < 8; i++) {
-                //corner to point
-                Vector3 ctp = point - corner[i];
-                //corner to centre;
-                Vector3 ceTp = this.centre - corner[i];
-                r = r ||Vector3.Dot(ctp, ceTp) > 0;
+               
+                Vector3 cenTp = point - this.centre;
+                Vector3 cornTp = point - corner[i];
+                r = r || (cenTp + cornTp).LengthSquared() < cenTp.LengthSquared();
             }
             return r;
             

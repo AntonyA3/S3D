@@ -7,27 +7,68 @@ using Microsoft.Xna.Framework;
 
 namespace S3D.Core._2D.Physics
 {
-    class Circle
+    public class Circle
     {
         float radius;
         Vector2 centre;
+
+
+        public Vector2 Centre { 
+            get {
+                return this.centre;
+            }
+            set {
+                this.centre = value;
+            }
+        }
+
+        public float Radius { get {
+                return this.radius;
+            } set {
+                this.radius = value;
+            } 
+        }
+
+        public Circle() {
+            this.radius = 0;
+            this.centre = new Vector2(0, 0);
+        }
+
+        public Circle(Vector2 centre, float radius) {
+            this.centre = centre;
+            this.radius = radius;
+        }
 
         public bool Intersects(Circle circle) {
             return Vector2.DistanceSquared(this.centre, circle.centre) < this.radius * this.radius + circle.radius * circle.radius;
         }
 
+
         public bool Intersects(Rect rect) {
-            Vector2[] corner = rect.GetCorners();
-            bool r = false;
-            for (int i = 0; i < 4; i++) {
-                r = r || this.Contains(corner[i]);
-            }
-            return r;
+            
+            Vector2 d = (rect.Centre - this.centre);
+            d.Normalize();
+            return rect.Contains(d * this.radius) || rect.Contains(this.centre);
         }
 
         public bool Contains(Vector2 point)
         {
             return Vector2.DistanceSquared(this.centre, point) < this.radius * this.radius;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return base.Equals(obj);
+        }
+
+        public override string ToString()
+        {
+            return base.ToString();
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
         }
 
     }

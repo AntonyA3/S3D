@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 
 namespace S3D.Core._3D.Physics
 {
-    class Sphere
+    public class Sphere
     {
         private Vector3 centre;
         private float radius;
@@ -36,14 +36,10 @@ namespace S3D.Core._3D.Physics
         }
 
         public bool Intersects(Box box) {
-            Vector3[] corner = box.GetCorners();
-            bool r = false;
-
-            for (int i = 0; i < 8; i++) {
-                r = r || this.Contains(corner[i]);
-            }
-            return r;
-            
+            Vector3 d = box.Centre - this.centre;
+            d.Normalize();
+            d *= radius;
+            return box.Contains(d);
         }
 
         public bool Contains(Vector3 point) {
