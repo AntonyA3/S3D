@@ -39,10 +39,16 @@ namespace S3D.Core._3D.Physics
                 this.centre + axis0 - axis1 + axis2
             };
         }
-
+        public BoundingBox GetBoundingBox() {
+            return BoundingBox.CreateFromPoints(this.GetCorners());
+        }
         public bool Contains(Vector3 point) {
+           
             Plane[] plane = this.GetPlanes();
             bool b = true;
+            /*for the this to return true the inner normal of all box planes must be
+             * closer than the outer normal
+             */
             for (int i = 0; i < 6; i++) {
                 Vector3 topNormal = plane[i].GetNormal();
                 b = b && (plane[i].centre + topNormal - point).LengthSquared() > (plane[i].centre - topNormal - point).LengthSquared();
@@ -53,59 +59,80 @@ namespace S3D.Core._3D.Physics
         }
 
         public bool Intersects(Line line) {
-            if (this.Contains(line.p0))
-            {
-                return true;
-            }
-            if (this.Contains(line.p1))
-            {
-                return true;
-            }
-
-            Plane[] plane = this.GetPlanes();
-            for (int i = 0; i < 6; i++)
-            {
-                bool r = line.Intersects(plane[i]);
-                if (r)
+            if (line.GetRay().Intersects(this.GetBoundingBox())!= null) { 
+                if (this.Contains(line.p0))
                 {
+                    return true;
+                }
+                if (this.Contains(line.p1))
+                {
+                    return true;
+                }
+            
+                //either the box contains each point in a line
+            
 
-                    return r;
+                //or this line intersects one of the planes of the box
+                Plane[] plane = this.GetPlanes();
+                for (int i = 0; i < 6; i++)
+                {
+                    bool r = line.Intersects(plane[i]);
+                    if (r)
+                    {
+                        return r;
+                    }
                 }
             }
+            
+            //if not there is no intersectiom
             return false;
         }
-
+        
         public bool Intersects(Sphere sphere) {
-            Plane[] plane = this.GetPlanes();
-            for (int i = 0; i < 6; i++) {
-                if (sphere.Intersects(plane[i])) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        public bool Intersects(Plane plane) {
-            Plane[] boxPlanes = this.GetPlanes();
-            for (int i = 0; i < 6; i++) {
-                if (boxPlanes[i].Intersects(plane)) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        public bool Intersects(Box box) {
-            Plane[] ourPlanes = this.GetPlanes();
-            Plane[] otherPlanes = box.GetPlanes();
-            for (int i = 0; i < 6; i++) {
-                for (int j = 0; j < 6; j++)
-                {
-                    if (ourPlanes[i].Intersects(otherPlanes[j])) {
+            if (this.GetBoundingBox().Intersects(sphere.GetBoundingBox())) { 
+                Plane[] plane = this.GetPlanes();
+                //the sphere intersects with at least 1 plane of the box
+                for (int i = 0; i < 6; i++) {
+                    if (sphere.Intersects(plane[i])) {
                         return true;
                     }
                 }
             }
+            
+            //otherwise there is no intersection
+            return false;
+        }
+
+        public bool Intersects(Plane plane) {
+            if (this.GetBoundingBox().Intersects(plane.GetBounding())) { 
+                Plane[] boxPlanes = this.GetPlanes();
+                //at least 1 of the planes of the box, must intersect with the plane
+                for (int i = 0; i < 6; i++) {
+                    if (boxPlanes[i].Intersects(plane)) {
+                        return true;
+                    }
+                }
+            }
+            
+            return false;
+        }
+
+        public bool Intersects(Box box) {
+            if (this.GetBoundingBox().Intersects(box.GetBoundingBox())) { 
+                Plane[] ourPlanes = this.GetPlanes();
+                Plane[] otherPlanes = box.GetPlanes();
+
+                //at least 1 of the planes of this box must intersect with another plane of another box
+                for (int i = 0; i < 6; i++) {
+                    for (int j = 0; j < 6; j++)
+                    {
+                        if (ourPlanes[i].Intersects(otherPlanes[j])) {
+                            return true;
+                        }
+                    }
+                }
+            }
+            
             return false;
         }
         private Plane[] GetPlanes() {

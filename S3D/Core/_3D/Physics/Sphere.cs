@@ -12,7 +12,9 @@ namespace S3D.Core._3D.Physics
         public Vector3 centre;
         public float radius;
 
-
+        public BoundingBox GetBoundingBox() {
+            return BoundingBox.CreateFromSphere(new BoundingSphere(this.centre, this.radius));
+        }
         public Sphere(Vector3 centre, float radius) {
             this.centre = centre; 
             this.radius = radius;
@@ -29,7 +31,10 @@ namespace S3D.Core._3D.Physics
 
         public bool Intersects(Sphere sphere)
         {
-            return Vector3.DistanceSquared(this.centre, sphere.centre) < this.radius * this.radius;
+            /*the distance between the spheres, must be less that the combined radius of both sphere,
+             * squared to avoid computing square root.
+            */
+            return Vector3.DistanceSquared(this.centre, sphere.centre) < this.radius * this.radius + sphere.radius * sphere.radius;
         }
         public bool Intersects(Plane plane) {
 
