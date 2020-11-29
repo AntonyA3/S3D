@@ -43,11 +43,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Core\_2D\Physics\Circle.cs" />
+    <Compile Include="Core\_2D\Physics\Geometry2D.cs" />
     <Compile Include="Core\_2D\Physics\Rect.cs" />
     <Compile Include="Core\_2D\Sprite.cs" />
     <Compile Include="Core\_3D\Humanoid.cs" />
     <Compile Include="Core\_3D\Physics\Box.cs" />
-    <Compile Include="Core\_3D\Physics\Joint.cs" />
+    <Compile Include="Core\_3D\Physics\Line.cs" />
+    <Compile Include="Core\_3D\Physics\Plane.cs" />
     <Compile Include="Core\_3D\Physics\Sphere.cs" />
     <Compile Include="Core\_3D\Sprite3D.cs" />
     <Compile Include="Core\Debugger\GraphicalDebugger.cs" />

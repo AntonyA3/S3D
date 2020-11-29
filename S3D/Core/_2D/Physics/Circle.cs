@@ -45,10 +45,34 @@ namespace S3D.Core._2D.Physics
 
 
         public bool Intersects(Rect rect) {
-            
-            Vector2 d = (rect.Centre - this.centre);
-            d.Normalize();
-            return rect.Contains(d * this.radius) || rect.Contains(this.centre);
+            Vector2[] corner = rect.GetCorners();
+            Vector2 v0 = rect.XVector;
+            Vector2 v1 = rect.XVector;
+            Vector2 p;
+            v1.Y *= -1;
+            bool b = false;
+            for (int i = 0; i < 4; i++) {
+                b = b || this.Contains(corner[i]);
+            }
+            if (b) return b;
+            b = this.Contains(Geometry2D.GetIntersectionPoint(corner[0], v0, this.centre, v1));
+            p = Geometry2D.GetIntersectionPoint(corner[0], v0, this.centre, v1);
+            b = this.Contains(p) && Geometry2D.isPointOnLine(corner[0], corner[3], p);
+            if (b) return b;
+            p = Geometry2D.GetIntersectionPoint(corner[1], v0, this.centre, v1);
+            b = this.Contains(p) && Geometry2D.isPointOnLine(corner[1], corner[2], p);
+
+            if (b) return b;
+            v0 = rect.YVector;
+            v1 = rect.YVector;
+            v1.Y *= -1;
+            p = Geometry2D.GetIntersectionPoint(corner[0], v0, this.centre, v1);
+            b = this.Contains(p) && Geometry2D.isPointOnLine(corner[0], corner[1], p);
+            if (b) return b;
+            p = Geometry2D.GetIntersectionPoint(corner[2], v0, this.centre, v1);
+            b = this.Contains(p) && Geometry2D.isPointOnLine(corner[2], corner[3], p);
+            return b;
+
         }
 
         public bool Contains(Vector2 point)

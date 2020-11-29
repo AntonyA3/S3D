@@ -7,168 +7,128 @@ using Microsoft.Xna.Framework;
 
 namespace S3D.Core._3D.Physics
 {
-    /// <summary>
-    /// Represent a Movable and Rotatable cuboid that is useful for collision detection
-    /// </summary>
-    public class Box
+
+    public struct Box
     {
-        /// <summary>
-        /// The centre of the cuboid
-        /// </summary>
-        private Vector3 centre;
-        /// <summary>
-        /// Half the width of the cuboid
-        /// </summary>
-        private float halfWidth;
-        /// <summary>
-        /// Half the height of the cuboid
-        /// </summary>
-        private float halfHeight;
-        /// <summary>
-        /// Half the depth of the cuboid
-        /// </summary>
-        private float halfDepth;
-        /// <summary>
-        /// The up vector of the cuboid
-        /// where the magnitude is the halfHeight
-        /// </summary>
-        private Vector3 upVector;
-        /// <summary>
-        /// The right vector where the magnitude is the
-        /// half width
-        /// </summary>
-        private Vector3 rightVector;
-        /// <summary>
-        /// The forward vector where the magnitude is the
-        /// half depth
-        /// </summary>
-        private Vector3 forwardVector;
 
-        /// <summary>
-        /// Initialises the default bounding box.
-        /// </summary>
-        public Box() {
-            this.centre = new Vector3(0, 0, 0);
 
-            this.upVector = new Vector3(0, 0, 0);
-            this.forwardVector = new Vector3(0, 0, 0);
-            this.rightVector = new Vector3(0, 0, 0);
-
-        }
-
-        /// <summary>
-        /// Creates a new Box with no orientation
-        /// </summary>
-        /// <param name="centre">The centre of the box</param>
-        /// <param name="halfWidth">Half of the width of the box and it's direction</param>
-        /// <param name="halfHeight">Half of the height of the box and its direction</param>
-        /// <param name="halfDepth">Half the depth of the box and it's direction</param>
-        public Box(Vector3 centre, Vector3 rightVector, Vector3 upVector, Vector3 forwardVector) {
+        Vector3 centre;
+        Vector3 axis0;
+        Vector3 axis1;
+        Vector3 axis2;
+        
+        public Box(Vector3 centre, Vector3 axis0, Vector3 axis1, Vector3 axis2)
+        {
             this.centre = centre;
+            this.axis0 = axis0;
+            this.axis1 = axis1;
+            this.axis2 = axis2;
 
-            this.rightVector = rightVector;
-            this.upVector = upVector;
-            this.forwardVector = forwardVector;
-
-        }
-        public Vector3 Centre {
-            get {
-                return this.centre;
-            }
-            set {
-                this.centre = value;
-            }
-        }
-        public Vector3 UpVector{
-            get{
-                return this.upVector;
-            }
-            set {
-                this.upVector = value;
-            }
-        }
-
-        public Vector3 RightVector { 
-            get {
-                return this.rightVector;
-            }
-            set {
-                this.rightVector = value;
-            }
-        }
-
-        public Vector3 ForwardVector { 
-            get {
-                return this.forwardVector;
-            }
-            set {
-                this.forwardVector = value;
-            }
-        }
-
-        public bool Intersects(Sphere sphere) {
-            return sphere.Intersects(this);
-        }
-
-        /// <summary>
-        /// Because the intersection function uses the contains function
-        /// it should work for parallelpipes 
-        /// </summary>
-        /// <param name="box"></param>
-        /// <returns></returns>
-        public bool Intersects(Box box) {
-            bool r = false;
-            Vector3[] corner = box.GetCorners();
-            Vector3[] corner2 = this.GetCorners();
-            for (int i = 0; i < 8; i++) {
-                r = r || this.Contains(corner[i]);
-                r = r || box.Contains(corner2[i]);
-            }
-            return r;
-        }
-        /// <summary>
-        /// The contains function that should work for parallelpipes
-        /// </summary>
-        /// <param name="point"></param>
-        /// <returns></returns>
-        public bool Contains(Vector3 point) {
-            bool r = false;
-            Vector3[] corner = this.GetCorners();
-            
-
-            for (int i = 0; i < 8; i++) {
-               
-                Vector3 cenTp = point - this.centre;
-                Vector3 cornTp = point - corner[i];
-                r = r || (cenTp + cornTp).LengthSquared() < cenTp.LengthSquared();
-            }
-            return r;
-            
         }
 
         public Vector3[] GetCorners() {
-            Vector3[] corner = {
-                this.centre - this.rightVector - this.upVector - this.forwardVector,
-                this.centre - this.rightVector + this.upVector - this.forwardVector,
-                this.centre + this.rightVector + this.upVector - this.forwardVector,
-                this.centre + this.rightVector - this.upVector - this.forwardVector,
-                this.centre - this.rightVector - this.upVector + this.forwardVector,
-                this.centre - this.rightVector + this.upVector + this.forwardVector,
-                this.centre + this.rightVector + this.upVector + this.forwardVector,
-                this.centre + this.rightVector - this.upVector + this.forwardVector
+
+            return new Vector3[] {
+                this.centre - axis0 - axis1 - axis2,
+                this.centre - axis0 + axis1 - axis2,
+                this.centre + axis0 + axis1 - axis2,
+                this.centre + axis0 - axis1 - axis2,
+                this.centre - axis0 - axis1 + axis2,
+                this.centre - axis0 + axis1 + axis2,
+                this.centre + axis0 + axis1 + axis2,
+                this.centre + axis0 - axis1 + axis2
             };
-            return corner;
         }
-        /// <summary>
-        /// this returns true if it is a box,
-        /// this returns false if it is a parallelpipe
-        /// </summary>
-        public bool isBox() {
-            return Vector3.Dot(upVector, rightVector) +
-                   Vector3.Dot(rightVector, forwardVector) +
-                   Vector3.Dot(upVector, forwardVector) == 0;
+
+        public bool Contains(Vector3 point) {
+            Plane[] plane = this.GetPlanes();
+            bool b = true;
+            for (int i = 0; i < 6; i++) {
+                Vector3 topNormal = plane[i].GetNormal();
+                b = b && (plane[i].centre + topNormal - point).LengthSquared() > (plane[i].centre - topNormal - point).LengthSquared();
+            }
+
+            return b;
             
         }
-     
+
+        public bool Intersects(Line line) {
+            if (this.Contains(line.p0))
+            {
+                return true;
+            }
+            if (this.Contains(line.p1))
+            {
+                return true;
+            }
+
+            Plane[] plane = this.GetPlanes();
+            for (int i = 0; i < 6; i++)
+            {
+                bool r = line.Intersects(plane[i]);
+                if (r)
+                {
+
+                    return r;
+                }
+            }
+            return false;
+        }
+
+        public bool Intersects(Sphere sphere) {
+            Plane[] plane = this.GetPlanes();
+            for (int i = 0; i < 6; i++) {
+                if (sphere.Intersects(plane[i])) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public bool Intersects(Plane plane) {
+            Plane[] boxPlanes = this.GetPlanes();
+            for (int i = 0; i < 6; i++) {
+                if (boxPlanes[i].Intersects(plane)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public bool Intersects(Box box) {
+            Plane[] ourPlanes = this.GetPlanes();
+            Plane[] otherPlanes = box.GetPlanes();
+            for (int i = 0; i < 6; i++) {
+                for (int j = 0; j < 6; j++)
+                {
+                    if (ourPlanes[i].Intersects(otherPlanes[j])) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+        private Plane[] GetPlanes() {
+            Vector3[] c = this.GetCorners();
+            //left
+            //right
+            //bottom
+            //top
+            //front
+            //back
+            return new Plane[] {
+                new Plane(c[0] + 0.5f * (c[5] - c[0]),axis2, -axis1),
+                new Plane(c[3] + 0.5f *(c[6] - c[3]), axis2, axis1),
+                new Plane(c[0] + 0.5f *(c[7] - c[0]), -axis0, axis2),
+                new Plane(c[1] + 0.5f *(c[6] - c[1]), -axis0, -axis2 ),
+                new Plane(c[0] + 0.5f *(c[2] - c[0]), -axis0, -axis1 ),
+                new Plane(c[4] + 0.5f *(c[6] - c[4]), -axis0, axis1 )
+            };
+
+           
+
+        }
+        
+
     }
 }

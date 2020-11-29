@@ -37,10 +37,10 @@ namespace S3D.Core._3D
             this.leftKneeJoint.Position += deltaPosition;
             this.leftLegJoint.Position += deltaPosition;
             this.rightLegJoint.Position += deltaPosition;
-            this.upperLeftLegBox.Centre += position;
-            this.upperRightLegBox.Centre += position;
-            this.lowerLeftLegBox.Centre += position;
-            this.lowerRightLegBox.Centre += position;
+            //this.upperLeftLegBox.Centre += position;
+            //this.upperRightLegBox.Centre += position;
+            //this.lowerLeftLegBox.Centre += position;
+            //this.lowerRightLegBox.Centre += position;
         }
 
         public void setLeftKneeJointRotation() { 
