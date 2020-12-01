@@ -19,7 +19,8 @@ namespace S3D.Core._2D
         private Texture2D texture;
 
 
-        public Sprite(Texture2D texture) {
+        public Sprite(Texture2D texture)
+        {
             this.location = new Vector2(0, 0);
             this.area = new Rectangle();
             this.frame = new Rectangle();
@@ -28,6 +29,87 @@ namespace S3D.Core._2D
             this.layer = 0;
             this.texture = texture;
         }
+
+        public Vector2 Location { 
+            get {
+                return this.location;
+            }
+            set
+            {
+                this.location = value;
+            }
+        
+        }
+
+        public Rectangle Area { 
+            get {
+                return this.area;
+            } set {
+                this.area = value;
+            } 
+        }
+
+        public Rectangle Frame
+        {
+            get
+            {
+                return this.frame;
+            }
+            set
+            {
+                this.frame = value;
+            }
+        }
+
+        public Color Color
+        {
+            get
+            {
+                return this.color;
+            }
+            set
+            {
+                this.color = value;
+            }
+        }
+
+        public SpriteEffects Flipped
+        {
+            get
+            {
+                return this.flipped;
+            }
+            set
+            {
+                this.flipped = value;
+            }
+        }
+
+        public float Layer
+        {
+            get
+            {
+                return this.layer;
+            }
+            set
+            {
+                this.layer = value;
+            }
+        }
+
+        public Texture2D Texture2D
+        {
+            get
+            {
+                return this.texture;
+            }
+            set
+            {
+                this.texture = value;
+            }
+        }
+
+
 
         public void Draw(SpriteBatch spriteBatch) {
             spriteBatch.Draw(texture, null, area, frame, null, 0, null, color, flipped, 0);
