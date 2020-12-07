@@ -14,12 +14,7 @@ namespace S3D.Core._3D
     /// </summary>
     class Humanoid
     {
-        Joint leftLegJoint;
-        Joint rightLegJoint;
-        Joint leftKneeJoint;
-        Joint rightKneeJoint;
-
-        Joint pelvicCentreJoint;
+       
 
         Box upperLeftLegBox;
         Box upperRightLegBox;
@@ -30,17 +25,7 @@ namespace S3D.Core._3D
         }
 
         public void setPelvicPosition(Vector3 position) {
-            Vector3 deltaPosition = position - this.pelvicCentreJoint.Position;
-            this.pelvicCentreJoint.Position = position;
-
-            this.rightKneeJoint.Position += deltaPosition;
-            this.leftKneeJoint.Position += deltaPosition;
-            this.leftLegJoint.Position += deltaPosition;
-            this.rightLegJoint.Position += deltaPosition;
-            //this.upperLeftLegBox.Centre += position;
-            //this.upperRightLegBox.Centre += position;
-            //this.lowerLeftLegBox.Centre += position;
-            //this.lowerRightLegBox.Centre += position;
+      
         }
 
         public void setLeftKneeJointRotation() { 

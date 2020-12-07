@@ -42,12 +42,17 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Core\_2D\CircleCollider.cs" />
-    <Compile Include="Core\_2D\Physics\Circle.cs" />
-    <Compile Include="Core\_2D\Physics\Line.cs" />
-    <Compile Include="Core\_2D\Physics\Rect.cs" />
-    <Compile Include="Core\_2D\Physics\RectCollider.cs" />
-    <Compile Include="Core\_2D\Physics\Shape.cs" />
+    <Compile Include="Core\Player.cs" />
+    <Compile Include="Core\_2D\Tile.cs" />
+    <Compile Include="Core\_2D\TileMap.cs" />
+    <Compile Include="Core\_2D\Collider\CircleCollider.cs" />
+    <Compile Include="Core\_2D\Collider\ICollider.cs" />
+    <Compile Include="Core\_2D\Shape\Circle.cs" />
+    <Compile Include="Core\_2D\Shape\Line.cs" />
+    <Compile Include="Core\_2D\Shape\Rect.cs" />
+    <Compile Include="Core\_2D\Collider\RectCollider.cs" />
+    <Compile Include="Core\_2D\Shape\Shape.cs" />
+    <Compile Include="Core\_2D\World.cs" />
     <Compile Include="Core\_2D\Sprite.cs" />
     <Compile Include="Core\_3D\Humanoid.cs" />
     <Compile Include="Core\_3D\Physics\Box.cs" />

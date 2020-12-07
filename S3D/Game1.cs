@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using S3D.Core._2D;
 
 namespace S3D
 {
@@ -11,7 +12,7 @@ namespace S3D
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        
+        World world;
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -27,7 +28,6 @@ namespace S3D
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-
             base.Initialize();
         }
 
@@ -39,6 +39,7 @@ namespace S3D
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
+            this.world = new World(Content);
 
             // TODO: use this.Content to load your game content here
         }
@@ -61,7 +62,7 @@ namespace S3D
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-
+            world.Update(gameTime.ElapsedGameTime.Milliseconds / 1000.0f);
             // TODO: Add your update logic here
 
             base.Update(gameTime);
@@ -74,7 +75,9 @@ namespace S3D
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
-
+            spriteBatch.Begin();
+            world.Draw(spriteBatch);
+            spriteBatch.End();
             // TODO: Add your drawing code here
 
             base.Draw(gameTime);

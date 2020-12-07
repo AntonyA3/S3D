@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace S3D.Core._2D
 {
-    class Sprite
+    public class Sprite
     {
         private Vector2 location;
         private Rectangle area;
@@ -43,7 +43,9 @@ namespace S3D.Core._2D
 
         public Rectangle Area { 
             get {
-                return this.area;
+                Rectangle area = this.area;
+                area.Offset(this.location);
+                return area;
             } set {
                 this.area = value;
             } 
